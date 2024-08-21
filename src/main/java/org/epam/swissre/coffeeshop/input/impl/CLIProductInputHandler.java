@@ -9,6 +9,7 @@ import org.epam.swissre.coffeeshop.input.ProductInputHandler;
 import org.epam.swissre.coffeeshop.model.*;
 import org.epam.swissre.coffeeshop.util.FormatUtils;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -91,7 +92,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
         System.out.println("7 - Exit (without payment)");
         System.out.print("Choose an option: ");
 
-        return scanner.nextInt();
+        return getIntInputFromCLI("Please enter a number between 1 and 7.");
     }
 
     /**
@@ -104,8 +105,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
         System.out.printf("3 - Large (%.2f CHF)%n", CoffeeSize.LARGE.getPriceInCHF());
         System.out.print("Choose an option: ");
 
-        int size = scanner.nextInt();
-        scanner.nextLine(); // consume leftover newline
+        int size = getIntInputFromCLI("Please enter a number between 1 and 3.");
 
         Product coffee;
         switch (size) {
@@ -127,6 +127,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
     }
 
     private void orderExtra() {
+        boolean isValidInput = false; // Flag to check if input is valid
 
         // simple validation, it can be changed with requirements and moved to the ProductValidator class
         if (!hasCoffee(productInput.getProducts())) {
@@ -140,8 +141,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
         System.out.printf("3 - Special roast coffee (%.2f CHF)%n", ExtraOption.SPECIAL_ROAST_COFFEE.getPriceInCHF());
         System.out.print("Choose an option: ");
 
-        int size = scanner.nextInt();
-        scanner.nextLine(); // consume leftover newline
+        int size = getIntInputFromCLI("Please enter a number between 1 and 3.");
 
         Product extra;
         switch (size) {
@@ -167,6 +167,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
     }
 
     private void reviewOrder() {
+        boolean isValidInput = false; // Flag to check if input is valid
 
         if (productInput.getProducts().isEmpty()) {
             System.out.println("Please select products in the main menu.");
@@ -183,25 +184,44 @@ public class CLIProductInputHandler implements ProductInputHandler {
         double totalCost = productInput.getProducts().stream().mapToDouble(Product::getPrice).sum();
 
         System.out.printf("Total cost (without discount): %.2f CHF:", totalCost);
-
         System.out.println("\nPlease confirm your order (yes/no):");
 
-        String choice = scanner.next().trim().toLowerCase();
-        scanner.nextLine(); // consume leftover newline
-
         // Decision-making based on user input.
-        switch (choice) {
-            case "yes":
-                // If user confirms, set the readiness to proceed to payment.
-                productInput.setReadyToPay(true);
-                break;
-            case "no":
-                // If user declines, set readiness to false.
-                productInput.setReadyToPay(false);
-                break;
-            default:
-                System.out.println("Invalid option, please type 'yes' or 'no'.");
-                break;  // Exit the method after displaying the message.
+        while (!isValidInput) {
+            String choice = scanner.next().trim().toLowerCase();
+            scanner.nextLine(); // consume leftover newline
+
+            switch (choice) {
+                case "yes":
+                    // If user confirms, set the readiness to proceed to payment.
+                    productInput.setReadyToPay(true);
+                    isValidInput = true; // Set the flag to true
+                    break;
+                case "no":
+                    // If user declines, set readiness to false.
+                    productInput.setReadyToPay(false);
+                    isValidInput = true; // Set the flag to true
+                    break;
+                default:
+                    System.out.println("Invalid option, please type 'yes' or 'no'.");
+                    break;  // Exit the method after displaying the message.
+            }
         }
+    }
+
+    private int getIntInputFromCLI(String errorDescription) {
+        boolean isValidInput = false; // Flag to check if input is valid
+        int size = 0;
+        while (!isValidInput) {
+            try {
+                size = scanner.nextInt();
+                scanner.nextLine(); // consume leftover newline
+                isValidInput = true; // Set the flag to true if no exception was thrown
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. " + errorDescription);
+                scanner.nextLine(); // Clear the buffer to avoid infinite loop
+            }
+        }
+        return size;
     }
 }
