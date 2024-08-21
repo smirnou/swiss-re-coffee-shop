@@ -9,6 +9,9 @@ It allows users to add products to an order, review the order, confirm it, and p
 - **Review & Confirm Order**: Check your order details and confirm.
 - **Proceed to Payment**: Calculate discounts and complete the transaction and generate a receipt.
 
+## Design
+The LLD and technical overview are located in a separate [LLD](LLD.md) file.
+
 ## Installation
 
 ### Prerequisites
