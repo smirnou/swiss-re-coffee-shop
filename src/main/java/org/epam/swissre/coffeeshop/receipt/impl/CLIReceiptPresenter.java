@@ -27,7 +27,7 @@ public class CLIReceiptPresenter extends ReceiptPresenter {
      */
     @Override
     public void presentReceipt() {
-        System.out.println("=== Coffee Shop Receipt ===");
+        System.out.println("\n=== Coffee Shop Receipt ===");
         System.out.println("Date:" + DateTimeUtils.getCurrentDateTime());
         System.out.println("\nItems:");
 
@@ -43,5 +43,6 @@ public class CLIReceiptPresenter extends ReceiptPresenter {
         System.out.println("\n=== Thank You for Visiting! ===");
         System.out.println("Keep your receipt! Every 5th beverage is on us!");
         System.out.println("For feedback, call us: 123-456-789");
+        System.out.println("=== END of Receipt ===");
     }
 }

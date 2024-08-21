@@ -89,7 +89,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
      * @return the selected main menu option as an integer.
      */
     private int displayMainMenu() {
-        System.out.println("Please choose an option:");
+        System.out.println("\nPlease choose an option:");
         System.out.println("1 - Order Coffee");
         System.out.println("2 - Order Orange Juice");
         System.out.println("3 - Order Bacon Roll");
@@ -106,7 +106,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
      * Manages the coffee ordering process and adds ordered coffee to the product list.
      */
     protected void orderCoffee() {
-        System.out.println("You chose Coffee. What size?");
+        System.out.println("\nYou chose Coffee. What size?");
         System.out.printf("1 - Small (%.2f CHF)%n", CoffeeSize.SMALL.getPriceInCHF());
         System.out.printf("2 - Medium (%.2f CHF)%n", CoffeeSize.MEDIUM.getPriceInCHF());
         System.out.printf("3 - Large (%.2f CHF)%n", CoffeeSize.LARGE.getPriceInCHF());
@@ -142,7 +142,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
             return;
         }
 
-        System.out.println("You chose Extra. What is your option?");
+        System.out.println("\nYou chose Extra. What is your option?");
         System.out.printf("1 - Extra milk (%.2f CHF)%n", ExtraOption.EXTRA_MILK.getPriceInCHF());
         System.out.printf("2 - Foamed milk (%.2f CHF)%n", ExtraOption.FOAMED_MILK.getPriceInCHF());
         System.out.printf("3 - Special roast coffee (%.2f CHF)%n", ExtraOption.SPECIAL_ROAST_COFFEE.getPriceInCHF());
@@ -182,7 +182,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
         }
 
         // Fetch and display all products added during this session (for demonstration purposes)
-        System.out.println("Here's a summary of your order:");
+        System.out.println("\nHere's a summary of your order:");
         int productCount = 0;
         for (Product product : productInput.getProducts()) {
             productCount ++;

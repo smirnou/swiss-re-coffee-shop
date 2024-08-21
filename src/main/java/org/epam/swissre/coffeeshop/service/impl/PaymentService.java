@@ -30,7 +30,7 @@ public class PaymentService implements IPaymentService {
      */
     private void performPaymentTransaction(Order order) {
         // Log or system print out for demonstration
-        System.out.printf("Transaction completed. Amount charged: CHF %.2f\n", order.getTotalCost());
+        System.out.printf("\nTransaction completed. Amount charged: CHF %.2f%n", order.getTotalCost());
 
         order.setStatus(OrderStatus.PAID);
     }
