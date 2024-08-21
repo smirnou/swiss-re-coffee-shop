@@ -1,6 +1,5 @@
-package org.epam.swissre.coffeeshop.input;
+package org.epam.swissre.coffeeshop.input.impl;
 
-import org.epam.swissre.coffeeshop.input.impl.SimpleProductInput;
 import org.epam.swissre.coffeeshop.model.Product;
 
 import org.junit.jupiter.api.BeforeEach;

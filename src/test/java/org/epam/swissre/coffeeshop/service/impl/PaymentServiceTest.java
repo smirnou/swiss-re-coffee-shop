@@ -1,8 +1,8 @@
-package org.epam.swissre.coffeeshop.service;
+package org.epam.swissre.coffeeshop.service.impl;
 
 import org.epam.swissre.coffeeshop.enums.OrderStatus;
 import org.epam.swissre.coffeeshop.model.Order;
-import org.epam.swissre.coffeeshop.service.impl.PaymentService;
+import org.epam.swissre.coffeeshop.service.IPaymentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

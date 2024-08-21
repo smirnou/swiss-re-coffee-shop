@@ -1,9 +1,9 @@
-package org.epam.swissre.coffeeshop.bonus;
+package org.epam.swissre.coffeeshop.bonus.impl;
 
+import org.epam.swissre.coffeeshop.bonus.BonusStrategy;
 import org.epam.swissre.coffeeshop.model.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 public class EveryFifthBeverageFreeBonus implements BonusStrategy {
 
     // Constant for how many beverages before a free one is given.
-    private final static int FREE_BEVERAGE_INTERVAL = 5;
+    private static final int FREE_BEVERAGE_INTERVAL = 5;
 
     /**
      * Applies the "Every Fifth Beverage Free" promotion to the order.
@@ -23,13 +23,6 @@ public class EveryFifthBeverageFreeBonus implements BonusStrategy {
     @Override
     public void apply(Order order) {
         List<Product> beverages = getBeverages(order.getProducts());
-
-        // Calculate discount by iterating over every fifth beverage
-        /* Java 8 style
-        double totalDiscount = 0.0;
-        for (int i = FREE_BEVERAGE_INTERVAL - 1; i < beverages.size(); i += FREE_BEVERAGE_INTERVAL) {
-            totalDiscount += beverages.get(i).getPrice();
-        } */
 
         // Use IntStream to generate indices, filter by each fifth index, then map to corresponding beverage prices
         double totalDiscount = IntStream.range(0, beverages.size())
@@ -47,6 +40,6 @@ public class EveryFifthBeverageFreeBonus implements BonusStrategy {
      * @return a list of products that are instances of beverages.
      */
     private List<Product> getBeverages(List<Product> products) {
-        return products.stream().filter(i -> i instanceof Coffee || i instanceof OrangeJuice).collect(Collectors.toList());
+        return products.stream().filter(i -> i instanceof Coffee || i instanceof OrangeJuice).toList();
     }
 }

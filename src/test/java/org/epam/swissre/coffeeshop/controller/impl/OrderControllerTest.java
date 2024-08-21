@@ -1,6 +1,6 @@
-package org.epam.swissre.coffeeshop.controller;
+package org.epam.swissre.coffeeshop.controller.impl;
 
-import org.epam.swissre.coffeeshop.controller.impl.OrderController;
+import org.epam.swissre.coffeeshop.controller.IOrderController;
 import org.epam.swissre.coffeeshop.model.Order;
 import org.epam.swissre.coffeeshop.model.Product;
 import org.epam.swissre.coffeeshop.receipt.ReceiptPresenter;

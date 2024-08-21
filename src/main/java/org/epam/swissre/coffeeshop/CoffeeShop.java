@@ -1,6 +1,7 @@
 package org.epam.swissre.coffeeshop;
 
-import org.epam.swissre.coffeeshop.bonus.*;
+import org.epam.swissre.coffeeshop.bonus.impl.EveryFifthBeverageFreeBonus;
+import org.epam.swissre.coffeeshop.bonus.impl.FreeExtraWithBeverageAndSnackBonus;
 import org.epam.swissre.coffeeshop.controller.*;
 import org.epam.swissre.coffeeshop.controller.impl.*;
 import org.epam.swissre.coffeeshop.input.*;

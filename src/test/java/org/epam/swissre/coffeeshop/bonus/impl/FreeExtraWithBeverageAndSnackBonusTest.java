@@ -1,5 +1,6 @@
-package org.epam.swissre.coffeeshop.bonus;
+package org.epam.swissre.coffeeshop.bonus.impl;
 
+import org.epam.swissre.coffeeshop.bonus.BonusStrategy;
 import org.epam.swissre.coffeeshop.enums.BaconRollSize;
 import org.epam.swissre.coffeeshop.enums.CoffeeSize;
 import org.epam.swissre.coffeeshop.model.*;

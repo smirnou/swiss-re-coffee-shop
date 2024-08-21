@@ -11,6 +11,7 @@ import org.epam.swissre.coffeeshop.util.FormatUtils;
 
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -30,6 +31,12 @@ public class CLIProductInputHandler implements ProductInputHandler {
     public CLIProductInputHandler(ProductInput productInput) {
         this.scanner = new Scanner(System.in);
         this.productInput = productInput;
+    }
+
+    // Test constructor allowing injecting custom Scanner
+    public CLIProductInputHandler(ProductInput productInput, Scanner scanner) {
+        this.productInput = productInput;
+        this.scanner = scanner;
     }
 
     /**
@@ -98,7 +105,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
     /**
      * Manages the coffee ordering process and adds ordered coffee to the product list.
      */
-    private void orderCoffee() {
+    protected void orderCoffee() {
         System.out.println("You chose Coffee. What size?");
         System.out.printf("1 - Small (%.2f CHF)%n", CoffeeSize.SMALL.getPriceInCHF());
         System.out.printf("2 - Medium (%.2f CHF)%n", CoffeeSize.MEDIUM.getPriceInCHF());
@@ -166,7 +173,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
         return products.stream().anyMatch(i -> i instanceof Coffee);
     }
 
-    private void reviewOrder() {
+    protected void reviewOrder() {
         boolean isValidInput = false; // Flag to check if input is valid
 
         if (productInput.getProducts().isEmpty()) {
@@ -209,7 +216,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
         }
     }
 
-    private int getIntInputFromCLI(String errorDescription) {
+    protected int getIntInputFromCLI(String errorDescription) {
         boolean isValidInput = false; // Flag to check if input is valid
         int size = 0;
         while (!isValidInput) {

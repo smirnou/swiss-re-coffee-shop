@@ -1,10 +1,10 @@
-package org.epam.swissre.coffeeshop.bonus;
+package org.epam.swissre.coffeeshop.bonus.impl;
 
+import org.epam.swissre.coffeeshop.bonus.BonusStrategy;
 import org.epam.swissre.coffeeshop.model.*;
 
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * A promotional strategy that provides a specific free extra item
@@ -50,7 +50,7 @@ public class FreeExtraWithBeverageAndSnackBonus implements BonusStrategy {
     }
 
     private List<Product> getExtraItems(List<Product> products) {
-        return products.stream().filter(i -> i instanceof ExtraItem).collect(Collectors.toList());
+        return products.stream().filter(i -> i instanceof ExtraItem).toList();
     }
 
     // Revised method to select a random extra item correctly

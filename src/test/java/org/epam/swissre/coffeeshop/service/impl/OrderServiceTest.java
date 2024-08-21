@@ -1,10 +1,10 @@
-package org.epam.swissre.coffeeshop.service;
+package org.epam.swissre.coffeeshop.service.impl;
 
 import org.epam.swissre.coffeeshop.bonus.BonusStrategy;
 import org.epam.swissre.coffeeshop.model.Order;
 import org.epam.swissre.coffeeshop.model.Product;
 import org.epam.swissre.coffeeshop.service.IBonusService;
-import org.epam.swissre.coffeeshop.service.impl.OrderService;
+import org.epam.swissre.coffeeshop.service.IOrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

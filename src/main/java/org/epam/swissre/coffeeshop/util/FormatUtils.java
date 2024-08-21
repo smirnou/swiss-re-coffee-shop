@@ -2,7 +2,7 @@ package org.epam.swissre.coffeeshop.util;
 
 public class FormatUtils {
 
-    public static final int TOTAL_WIDTH = 50; // Define the total width for formatting (adjustable as needed)
+    protected static final int TOTAL_WIDTH = 50; // Define the total width for formatting (adjustable as needed)
 
     /**
      * Formats a line item with description and price, aligning the price to the right with dot leaders.
