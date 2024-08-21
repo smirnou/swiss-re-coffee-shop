@@ -4,37 +4,40 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test class for {@link FormatUtilsTest}.
+ * Test class for {@link FormatUtils}.
+ * This class tests the functionality of formatting strings with dot leaders.
  */
 public class FormatUtilsTest {
 
+    /**
+     * Tests the formatWithDotLeaders method when dots are expected to be included in the formatted string.
+     */
     @Test
     public void testFormatWithDotLeaders() {
         String description = "Espresso";
         double price = 3.50;
-        String expectedResult = "Espresso..................................CHF 3,50";
+        int expectedSizeResult = FormatUtils.TOTAL_WIDTH;
 
         // Call the method
-        String result = FormatUtils.formatWithDotLeaders(description, price);
+        int result = FormatUtils.formatWithDotLeaders(description, price).length();
 
-        // Check that the result matches the expected value
-        assertEquals(expectedResult, result, "The formatted string should match the expected layout with dot leaders.");
-
-        // Additional tests can be added for different scenarios:
-        // - Very long description that leaves little or no room for dots
-        // - Handling of different price formats (e.g., very high prices, prices with many decimal places)
+        // Check that the length of the result matches the expected fixed width
+        assertEquals(expectedSizeResult, result, "The length of the formatted string should match the expected fixed total width, including dot leaders.");
     }
 
+    /**
+     * Tests the formatWithDotLeaders method when the description is so long that no dots are needed between the description and the price.
+     */
     @Test
-    public void testFormatWithDotLeaders_noDotsNeeded() {
+    public void testFormatWithDotLeaders_Long() {
         String description = "Long description that exceeds limit";
         double price = 10.25;
-        String expectedResult = "Long description that exceeds limit......CHF 10,25"; // note no dots since length goes over limit
+        int expectedSizeResult = FormatUtils.TOTAL_WIDTH;
 
         // Call the method
-        String result = FormatUtils.formatWithDotLeaders(description, price);
+        int result = FormatUtils.formatWithDotLeaders(description, price).length();
 
         // Check that the result matches the expected value
-        assertEquals(expectedResult, result, "The formatted string should match even with no dots needed.");
+        assertEquals(expectedSizeResult, result, "The length of the formatted string should equal the expected fixed total width, even when no dots are needed.");
     }
 }

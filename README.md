@@ -19,7 +19,11 @@ It allows users to add products to an order, review the order, confirm it, and p
 Clone the repository and build the project with Maven:
 
 ```bash
+# HTTPS
 git clone https://github.com/smirnou/swiss-re-coffee-shop.git
+# SSH
+git clone git@github.com:smirnou/swiss-re-coffee-shop.git
+
 cd swiss-re-coffee-shop
 mvn package
 ```
