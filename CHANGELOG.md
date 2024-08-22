@@ -2,6 +2,15 @@
 
 This document maintains a log of changes for each release of the CoffeeShop application.
 
+## [1.2-SNAPSHOT] - 2024-08-22
+
+### Added
+- Integration of the JaCoCo Maven plugin to generate coverage reports.
+- Configuration for excluding specific classes and packages in JaCoCo coverage reports to focus on meaningful code areas.
+
+### Improved
+- Code coverage metrics significantly enhanced by refining tests and optimizing code.
+
 ## [1.1-SNAPSHOT] - 2024-08-22
 
 ### Added

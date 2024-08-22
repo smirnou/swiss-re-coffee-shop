@@ -7,7 +7,7 @@
     <groupId>org.epam.swissre</groupId>
     <artifactId>swiss-re-coffee-shop</artifactId>
     <packaging>jar</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <name>Swiss Re Coffee Shop</name>
     <description>
         This Java application simulates a coffee shop's order processing system. It is designed to manage and process customer orders efficiently, providing a robust tool to enhance customer service and streamline sales processes through a command-line interface.
@@ -73,6 +73,60 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
+
+            <!-- JaCoCo plugin -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>  <!-- Check for the latest version -->
+                <!-- Configuration section common to all executions of this plugin -->
+                <configuration>
+                    <excludes>
+                        <!-- Exclude the CoffeeShop class to prevent it from affecting coverage metrics -->
+                        <exclude>org/epam/swissre/coffeeshop/CoffeeShop.class</exclude>
+                        <!-- Exclude all implementation files in the receipt and input implementation packages -->
+                        <exclude>org/epam/swissre/coffeeshop/receipt/impl/**</exclude>
+                        <exclude>org/epam/swissre/coffeeshop/input/impl/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <!-- Adding the check execution to enforce 80% line coverage -->
+                    <execution>
+                        <id>check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum> <!-- Enforces 80% line coverage -->
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
