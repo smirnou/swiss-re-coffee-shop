@@ -38,12 +38,27 @@ jobs:
 
       - name: Deploy JaCoCo Report to GitHub Pages
         run: |
+          # Setup Git configuration
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
-          git checkout gh-pages
-          mv target/site/jacoco/* .
+          
+          # Checkout or initialize gh-pages branch
+          git fetch origin gh-pages
+          git checkout gh-pages || git checkout --orphan gh-pages
+          
+          # Clear existing contents (prevent conflict, use with caution)
+          git rm -r ./* || echo "Initial commit"  # Handling an empty gh-pages branch
+          git clean -fdx  # Ensure working directory is clean
+          
+          # Create directory for the report if it doesn't exist (optional, for organized structure)
+          mkdir -p coverage-report
+          cp -r target/site/jacoco/. coverage-report/
+          
+          # Add all changes to git
           git add .
-          git commit -m "Update JaCoCo Report"
+          
+          # Commit and push if there are changes
+          git commit -m "Update JaCoCo Coverage Report" || echo "No changes to commit"
           git push origin gh-pages
 
       # If tests and coverage checks pass, package the application without running tests again
