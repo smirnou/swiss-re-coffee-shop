@@ -1,16 +1,26 @@
-## LLD design
+# LLD design
 
 # Table of Contents
 1. [Introduction](#introduction)
-2. [Purpose of LLD design](#purpose-of-lld-design)
-3. [Class diagram](#class-diagram)
+2. [Technical design](#technical-design)
+3. [Purpose of LLD design](#purpose-of-lld-design)
+4. [Class diagram](#class-diagram)
  * [Domain model classes](#domain-model-classes)
  * [Services & workflow](#services--workflow)
-4. [Sequence diagram](#sequence-diagram)
+5. [Sequence diagram](#sequence-diagram)
+6. [Persistence](#persistence)
+ * [OrderStorage Overview](#orderstorage-overview)
+ * [Key Features](#key-features)
+ * [Rationale for Implementing File-based Persistence](#rationale-for-implementing-file-based-persistence)
+ * [Example CSV Content](#example-csv-content)
+ * [Conclusion](#conclusion)
 
-## Introduction
+# Introduction
+
 This project is a Command Line Interface (CLI) based application designed for managing orders in a CoffeeShop application.
 It allows users to add products to an order, review the order, confirm it, and process payments.
+
+# Technical design
 
 ## Purpose of LLD design
 
@@ -22,116 +32,6 @@ The purpose of the Low-Level Design (LLD) for the coffee shop software task is t
 Domain model classes are described below:
 
 ![uml](/images/class-model-uml-diagram.png)
-
-<details>
-  <summary>Click to expand...</summary>
-
-```text
-@startuml
-' Set skin parameters for a cohesive visualization
-skinparam classAttributeIconSize 0
-skinparam roundcorner 20
-skinparam class {
-BackgroundColor White
-ArrowColor Black
-BorderColor Black
-}
-
-' Define the BeverageProduct interface with detailed description
-interface BeverageProduct {
-}
-note right of BeverageProduct
-**Marker interface for beverage-type products**
-
-This interface serves as a type marker, indicating that a product qualifies as a beverage.
-It is primarily used for type distinction and to enforce a contract which segregates
-beverage products from other product types in the system.
-
-Implementing this interface allows using type checks to ensure certain operations or
-methods are applicable exclusively to beverages. It carries no methods or fields
-and only serves to identify a product as a beverage.
-end note
-
-' Define Abstract Class Product with description
-abstract class Product {
-- name : String
-- price : double
-+ {abstract} Product(name : String, price : double)
-+ getName() : String
-+ getPrice() : double
-+ equals(o : Object) : boolean
-+ hashCode() : int
-}
-note left of Product
-**Abstract base class for all products**
-
-This abstract class represents a general framework for a product in the coffee shop.
-It defines essential properties such as product name and price, which are common across
-all derived product types.
-
-The intention of this class is to be extended by specific product classes to diversify the
-product offerings, maintaining consistent attributes like name and price that are crucial
-for business operations.
-end note
-
-' Define relations - inheritance and interface implementation
-BaconRoll -up-|> Product
-Coffee -up-|> Product
-ExtraItem -up-|> Product
-OrangeJuice -up-|> Product
-
-Coffee ..|> BeverageProduct
-OrangeJuice ..|> BeverageProduct
-
-' Define Product Subclasses
-class BaconRoll {
-+ BaconRoll(size : BaconRollSize)
-}
-
-class Coffee {
-+ Coffee(size : CoffeeSize)
-}
-
-class ExtraItem {
-+ ExtraItem(option : ExtraOption)
-}
-
-class OrangeJuice {
-+ OrangeJuice(size : OrangeJuiceSize)
-}
-
-' Define Order class with existing description
-class Order {
-- products : List<Product>
-- alreadyPaidProducts : List<Product>
-- status : OrderStatus
-- totalCost : double
-- totalDiscount : double
-
-    + Order(products : List<Product>)
-    + addProduct(product : Product)
-    + getProducts() : List<Product>
-    + setAlreadyPaidProducts(alreadyPaidProducts : List<Product>)
-    + getAlreadyPaidProducts() : List<Product>
-    + getStatus() : OrderStatus
-    + setStatus(status : OrderStatus)
-    + getTotalCost() : double
-    + setTotalCost(totalCost : double)
-    + applyDiscount(discount : double)
-    + getTotalDiscount() : double
-}
-note right of Order
-**Order class**
-Represents an order in the coffee shop, which can contain multiple products.
-This class manages the collection of products, and the various states and financial
-attributes of an order, such as total cost and discounts applied.
-end note
-
-' Show Composition relation between Order and Product
-Order "1" *-- "*" Product
-@enduml
-```
-</details>
 
 | # | Class                            | Attributes                                                                                                                                    | Methods                                                                                                                                                                                                                                                                                                                                                                                                        | Description                                                                                                                                             |
 |:--|:---------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -180,62 +80,39 @@ Sequence diagram is described below:
 
 ![uml](/images/sequence-uml-diagram.png)
 
-<details>
-  <summary>Click to expand...</summary>
 
-```text
-@startuml
-skinparam monochrome true
+## Persistence
 
-actor "Customer" as Customer
-participant "CLIProductInputHandler" as InputHandler
-participant "ProductInput" as ProductInput
-participant "OrderController" as Controller
-participant "OrderService" as OrderService
-participant "BonusService" as BonusService
-participant "PaymentService" as PaymentService
-participant "OrderStorage" as OrderStorage
-participant "ReceiptPresenter" as ReceiptPresenter
+### OrderStorage Overview
 
-Customer -> InputHandler : handleUserInput()
-alt Order Coffee
-    InputHandler -> ProductInput : addProduct(coffee)
-else Order Juice
-    InputHandler -> ProductInput : addProduct(juice)
-else Order Bacon Roll
-    InputHandler -> ProductInput : addProduct(baconRoll)
-else Order Extra
-    InputHandler -> ProductInput : addProduct(extra)
-end
-Customer -> InputHandler : reviewOrder()
-InputHandler -> ProductInput : setReadyToPay(true)
+The `OrderStorage` service, part of the `org.epam.swissre.coffeeshop.service.impl` package, handles the persistence of coffee shop orders using a CSV file. This module is integral to maintaining state across multiple executions by storing and retrieving order data.
 
-InputHandler -> Controller : processOrder(productList)
-Controller -> OrderStorage : retrieveOrders()
-activate OrderStorage
-OrderStorage -> OrderStorage : csvLineToOrder()
-deactivate OrderStorage
+### Key Features
 
-Controller -> OrderService : processOrder(newProducts, alreadyPaidProducts)
-OrderService -> BonusService : applyBonus(order)
-activate BonusService
-BonusService -> BonusService : registerBonusStrategy(strategy)
-deactivate BonusService
-OrderService -> OrderService : calculateTotalPrice()
+- **File Initialization**: Ensures a CSV file at the specified path exists or creates a new one.
+- **Data Management**: Appends new orders and retrieves existing ones from the CSV file.
 
-Controller -> PaymentService : processPayment(order)
-PaymentService -> PaymentService : performPaymentTransaction(order)
-PaymentService --> Controller : order.setStatus(PAID)
+### Rationale for Implementing File-based Persistence
 
-Controller -> OrderStorage : storeOrders(orderList)
-activate OrderStorage
-OrderStorage -> OrderStorage : orderToCsvLine(order)
-deactivate OrderStorage
+> NOTE: Part of requirements: There is no Graphical User Interface required and no persistence.
 
-Controller -> ReceiptPresenter : makeReceipt(order)
-ReceiptPresenter -> ReceiptPresenter : addReceiptRow(...)
-ReceiptPresenter --> ReceiptPresenter : presentReceipt()
-InputHandler -> Customer : displayReceipt()
-@enduml
+Persisting data using a CSV file offers several practical benefits for the CoffeeShop application:
+
+1. **Continuity**: Maintains order history across sessions, crucial for customer engagement and managing promotions like "every 5th beverage free".
+2. **Ease of Integration**: Given the small scale of the application, CSV files provide an easy-to-manage solution without the complexity and overhead of full-blown database systems.
+3. **Compliance and Testing**: Using Java SE’s native I/O capabilities ensures compliance with project constraints and facilitates efficient test-driven development (TDD), aligning perfectly with project requirements.
+
+This approach not only simplifies the technical implementation but also ensures robust functionality for loyalty programs and business analytics without additional dependencies.
+
+### Example CSV Content
+
+```csv
+Small coffee,2.55;Medium coffee,3.05
+Fresh Orange Juice (0.25l),3.95;Fresh Orange Juice (0.25l),3.95
 ```
-</details>
+
+Each line records a separate order, with products denoted by name and price, separated by semicolons.
+
+### Conclusion
+
+Utilizing a CSV file for order storage is a straightforward yet effective solution for ensuring data availability and promotional accuracy in coffee shop applications, balancing simplicity with functionality.

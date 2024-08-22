@@ -1,0 +1,53 @@
+@startuml
+skinparam monochrome true
+
+actor "Customer" as Customer
+participant "CLIProductInputHandler" as InputHandler
+participant "ProductInput" as ProductInput
+participant "OrderController" as Controller
+participant "OrderService" as OrderService
+participant "BonusService" as BonusService
+participant "PaymentService" as PaymentService
+participant "OrderStorage" as OrderStorage
+participant "ReceiptPresenter" as ReceiptPresenter
+
+Customer -> InputHandler : handleUserInput()
+alt Order Coffee
+    InputHandler -> ProductInput : addProduct(coffee)
+else Order Juice
+    InputHandler -> ProductInput : addProduct(juice)
+else Order Bacon Roll
+    InputHandler -> ProductInput : addProduct(baconRoll)
+else Order Extra
+    InputHandler -> ProductInput : addProduct(extra)
+end
+Customer -> InputHandler : reviewOrder()
+InputHandler -> ProductInput : setReadyToPay(true)
+
+InputHandler -> Controller : processOrder(productList)
+Controller -> OrderStorage : retrieveOrders()
+activate OrderStorage
+OrderStorage -> OrderStorage : csvLineToOrder()
+deactivate OrderStorage
+
+Controller -> OrderService : processOrder(newProducts, alreadyPaidProducts)
+OrderService -> BonusService : applyBonus(order)
+activate BonusService
+BonusService -> BonusService : registerBonusStrategy(strategy)
+deactivate BonusService
+OrderService -> OrderService : calculateTotalPrice()
+
+Controller -> PaymentService : processPayment(order)
+PaymentService -> PaymentService : performPaymentTransaction(order)
+PaymentService --> Controller : order.setStatus(PAID)
+
+Controller -> OrderStorage : storeOrders(orderList)
+activate OrderStorage
+OrderStorage -> OrderStorage : orderToCsvLine(order)
+deactivate OrderStorage
+
+Controller -> ReceiptPresenter : makeReceipt(order)
+ReceiptPresenter -> ReceiptPresenter : addReceiptRow(...)
+ReceiptPresenter --> ReceiptPresenter : presentReceipt()
+InputHandler -> Customer : displayReceipt()
+@enduml

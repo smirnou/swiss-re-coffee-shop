@@ -1,0 +1,103 @@
+@startuml
+' Set skin parameters for a cohesive visualization
+skinparam classAttributeIconSize 0
+skinparam roundcorner 20
+skinparam class {
+BackgroundColor White
+ArrowColor Black
+BorderColor Black
+}
+
+' Define the BeverageProduct interface with detailed description
+interface BeverageProduct {
+}
+note right of BeverageProduct
+**Marker interface for beverage-type products**
+
+This interface serves as a type marker, indicating that a product qualifies as a beverage.
+It is primarily used for type distinction and to enforce a contract which segregates
+beverage products from other product types in the system.
+
+Implementing this interface allows using type checks to ensure certain operations or
+methods are applicable exclusively to beverages. It carries no methods or fields
+and only serves to identify a product as a beverage.
+end note
+
+' Define Abstract Class Product with description
+abstract class Product {
+- name : String
+- price : double
++ {abstract} Product(name : String, price : double)
++ getName() : String
++ getPrice() : double
++ equals(o : Object) : boolean
++ hashCode() : int
+}
+note left of Product
+**Abstract base class for all products**
+
+This abstract class represents a general framework for a product in the coffee shop.
+It defines essential properties such as product name and price, which are common across
+all derived product types.
+
+The intention of this class is to be extended by specific product classes to diversify the
+product offerings, maintaining consistent attributes like name and price that are crucial
+for business operations.
+end note
+
+' Define relations - inheritance and interface implementation
+BaconRoll -up-|> Product
+Coffee -up-|> Product
+ExtraItem -up-|> Product
+OrangeJuice -up-|> Product
+
+Coffee ..|> BeverageProduct
+OrangeJuice ..|> BeverageProduct
+
+' Define Product Subclasses
+class BaconRoll {
++ BaconRoll(size : BaconRollSize)
+}
+
+class Coffee {
++ Coffee(size : CoffeeSize)
+}
+
+class ExtraItem {
++ ExtraItem(option : ExtraOption)
+}
+
+class OrangeJuice {
++ OrangeJuice(size : OrangeJuiceSize)
+}
+
+' Define Order class with existing description
+class Order {
+- products : List<Product>
+- alreadyPaidProducts : List<Product>
+- status : OrderStatus
+- totalCost : double
+- totalDiscount : double
+
+    + Order(products : List<Product>)
+    + addProduct(product : Product)
+    + getProducts() : List<Product>
+    + setAlreadyPaidProducts(alreadyPaidProducts : List<Product>)
+    + getAlreadyPaidProducts() : List<Product>
+    + getStatus() : OrderStatus
+    + setStatus(status : OrderStatus)
+    + getTotalCost() : double
+    + setTotalCost(totalCost : double)
+    + applyDiscount(discount : double)
+    + getTotalDiscount() : double
+}
+note right of Order
+**Order class**
+Represents an order in the coffee shop, which can contain multiple products.
+This class manages the collection of products, and the various states and financial
+attributes of an order, such as total cost and discounts applied.
+end note
+
+' Show Composition relation between Order and Product
+Order "1" *-- "*" Product
+@enduml
