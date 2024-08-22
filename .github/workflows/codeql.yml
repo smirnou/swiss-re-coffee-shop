@@ -11,6 +11,11 @@
 #
 name: "CodeQL Analysis"
 
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
 on:
   push:
     branches: [ main ]
@@ -37,12 +42,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
-
+      
     - name: Cache Maven packages
       uses: actions/cache@v3
       with:
@@ -51,8 +51,15 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-m2
 
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+        tools: true
+  
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
+
