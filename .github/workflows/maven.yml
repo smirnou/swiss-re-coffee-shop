@@ -45,7 +45,13 @@ jobs:
           mkdir -p coverage
           cp -r target/site/jacoco/. coverage/
           git add coverage
-          git commit -m "Update JaCoCo Coverage Report" -a || echo "No changes to commit"
+          
+          # Add updated README.md and LLD.md from the main branch
+          git checkout origin/main README.md LLD.md
+          git add README.md LLD.md
+          
+          # Commit changes
+          git commit -m "Update documentation and JaCoCo Coverage Report" -a || echo "No changes to commit"
           git push -u origin gh-pages --force
 
       # If tests and coverage checks pass, package the application without running tests again
