@@ -1,12 +1,24 @@
 ## LLD design
 
-> Please note: this is a DRAFT version of real LLD document.
+# Table of Contents
+1. [Introduction](#introduction)
+2. [Purpose of LLD design](#purpose-of-lld-design)
+3. [Class diagram](#class-diagram)
+ * [Domain model classes](#domain-model-classes)
+ * [Services & workflow](#services--workflow)
+4. [Sequence diagram](#sequence-diagram)
+
+## Introduction
+This project is a Command Line Interface (CLI) based application designed for managing orders in a CoffeeShop application.
+It allows users to add products to an order, review the order, confirm it, and process payments.
 
 ## Purpose of LLD design
 
 The purpose of the Low-Level Design (LLD) for the coffee shop software task is to provide a comprehensive and detailed blueprint that addresses the specific technical requirements and implementations necessary to build the software solution effectively. This LLD in ideal, outlines the architecture, data flow, classes, interfaces, and methods with precise attributes and operations, ensuring alignment with the system's high-level objectives and user requirements.
 
-## Domain model classes
+## Class diagram
+
+### Domain model classes
 Domain model classes are described below:
 
 ![uml](/images/class-model-uml-diagram.png)
@@ -119,7 +131,6 @@ end note
 Order "1" *-- "*" Product
 @enduml
 ```
-
 </details>
 
 | # | Class                            | Attributes                                                                                                                                    | Methods                                                                                                                                                                                                                                                                                                                                                                                                        | Description                                                                                                                                             |
@@ -140,7 +151,7 @@ Order "1" *-- "*" Product
  [extra_link]: https://github.com/smirnou/swiss-re-coffee-shop/blob/main/src/main/java/org/epam/swissre/coffeeshop/model/ExtraItem.java
 [beverage_link]: https://github.com/smirnou/swiss-re-coffee-shop/blob/main/src/main/java/org/epam/swissre/coffeeshop/model/BeverageProduct.java
 
-## Services
+### Services & workflow
 
 Main important services and their workflow are described below:
 
@@ -164,3 +175,67 @@ Main important services and their workflow are described below:
  [PaymentService_link]: https://github.com/smirnou/swiss-re-coffee-shop/blob/main/src/main/java/org/epam/swissre/coffeeshop/service/impl/PaymentService.java
  [CLIReceiptPresenter_link]:https://github.com/smirnou/swiss-re-coffee-shop/blob/main/src/main/java/org/epam/swissre/coffeeshop/receipt/impl/CLIReceiptPresenter.java
 
+## Sequence diagram
+Sequence diagram is described below:
+
+![uml](/images/sequence-uml-diagram.png)
+
+<details>
+  <summary>Click to expand...</summary>
+
+```text
+@startuml
+skinparam monochrome true
+
+actor "Customer" as Customer
+participant "CLIProductInputHandler" as InputHandler
+participant "ProductInput" as ProductInput
+participant "OrderController" as Controller
+participant "OrderService" as OrderService
+participant "BonusService" as BonusService
+participant "PaymentService" as PaymentService
+participant "OrderStorage" as OrderStorage
+participant "ReceiptPresenter" as ReceiptPresenter
+
+Customer -> InputHandler : handleUserInput()
+alt Order Coffee
+    InputHandler -> ProductInput : addProduct(coffee)
+else Order Juice
+    InputHandler -> ProductInput : addProduct(juice)
+else Order Bacon Roll
+    InputHandler -> ProductInput : addProduct(baconRoll)
+else Order Extra
+    InputHandler -> ProductInput : addProduct(extra)
+end
+Customer -> InputHandler : reviewOrder()
+InputHandler -> ProductInput : setReadyToPay(true)
+
+InputHandler -> Controller : processOrder(productList)
+Controller -> OrderStorage : retrieveOrders()
+activate OrderStorage
+OrderStorage -> OrderStorage : csvLineToOrder()
+deactivate OrderStorage
+
+Controller -> OrderService : processOrder(newProducts, alreadyPaidProducts)
+OrderService -> BonusService : applyBonus(order)
+activate BonusService
+BonusService -> BonusService : registerBonusStrategy(strategy)
+deactivate BonusService
+OrderService -> OrderService : calculateTotalPrice()
+
+Controller -> PaymentService : processPayment(order)
+PaymentService -> PaymentService : performPaymentTransaction(order)
+PaymentService --> Controller : order.setStatus(PAID)
+
+Controller -> OrderStorage : storeOrders(orderList)
+activate OrderStorage
+OrderStorage -> OrderStorage : orderToCsvLine(order)
+deactivate OrderStorage
+
+Controller -> ReceiptPresenter : makeReceipt(order)
+ReceiptPresenter -> ReceiptPresenter : addReceiptRow(...)
+ReceiptPresenter --> ReceiptPresenter : presentReceipt()
+InputHandler -> Customer : displayReceipt()
+@enduml
+```
+</details>

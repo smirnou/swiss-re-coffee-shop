@@ -10,7 +10,7 @@ It allows users to add products to an order, review the order, confirm it, and p
 - **Proceed to Payment**: Calculate discounts and complete the transaction and generate a receipt.
 
 ## Design
-The LLD and technical overview are located in a separate [LLD](LLD.md) file.
+The **LLD and technical overview** are located in a separate [LLD](https://smirnou.github.io/swiss-re-coffee-shop/LLD.html) file.
 
 ## Code Coverage
 
