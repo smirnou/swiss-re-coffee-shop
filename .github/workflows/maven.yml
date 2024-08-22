@@ -29,16 +29,26 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # Run tests to validate the build
-      - name: Run tests
-        run: mvn -B test --file pom.xml
+      # Run tests and verify code coverage before packaging
+      - name: Test and verify coverage
+        run: mvn -B verify --file pom.xml
 
-      # Packages the application and produces a JAR
+      - name: Generate JaCoCo coverage report
+        run: mvn jacoco:report
+
+      - name: Deploy JaCoCo Report to GitHub Pages
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git checkout gh-pages
+          mv target/site/jacoco/* .
+          git add .
+          git commit -m "Update JaCoCo Report"
+          git push origin gh-pages
+
+      # If tests and coverage checks pass, package the application without running tests again
       - name: Package application
-        run: mvn -B package --file pom.xml
-        # Ensuring the package phase does not run tests again
-        env:
-          MAVEN_OPTS: "-Dmaven.test.skip=true"
+        run: mvn -B package --file pom.xml -DskipTests
 
       # Uploads the generated JAR file to GitHub Actions artifacts
       - name: Upload artifact

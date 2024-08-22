@@ -13,6 +13,8 @@ This document maintains a log of changes for each release of the CoffeeShop appl
 
 ## [1.1-SNAPSHOT] - 2024-08-22
 
+> Artifact is available [here](https://github.com/smirnou/swiss-re-coffee-shop/actions/runs/10505310675)
+
 ### Added
 - Implemented data persistence using a CSV file:
     - The CoffeeShop application now uses a CSV file to store and track orders from previous sessions.
@@ -27,9 +29,9 @@ This document maintains a log of changes for each release of the CoffeeShop appl
 ### Known Issues
 - **Single User Limitation**: Currently, the persistence mechanism supports only one user's data (his orders).
 
-#### [1.0-SNAPSHOT] - 2024-08-21
+## [1.0-SNAPSHOT] - 2024-08-21
 
-> Application artifact is available [here](https://github.com/smirnou/swiss-re-coffee-shop/actions/runs/10493864487)
+> Artifact is available [here](https://github.com/smirnou/swiss-re-coffee-shop/actions/runs/10493864487)
 
 ### Added
 - Initial release of the CoffeeShop application.
