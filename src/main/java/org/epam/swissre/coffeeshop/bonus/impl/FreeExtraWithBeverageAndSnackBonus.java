@@ -42,7 +42,7 @@ public class FreeExtraWithBeverageAndSnackBonus implements BonusStrategy {
     }
 
     private boolean hasBeverage(List<Product> products) {
-        return products.stream().anyMatch(i -> i instanceof Coffee || i instanceof OrangeJuice);
+        return products.stream().anyMatch(i -> i instanceof BeverageProduct);
     }
 
     private boolean hasSnack(List<Product> products) {

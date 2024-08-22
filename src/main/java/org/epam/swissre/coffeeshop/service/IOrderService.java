@@ -9,5 +9,5 @@ import java.util.List;
  * Interface for the Order Service used to handle business logic related to order processing.
  */
 public interface IOrderService {
-    Order processOrder(List<Product> products);
+    Order processOrder(List<Product> newProducts, List<Product> alreadyPaidProducts);
 }

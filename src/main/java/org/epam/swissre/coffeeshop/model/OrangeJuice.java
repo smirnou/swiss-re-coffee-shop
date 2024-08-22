@@ -6,7 +6,7 @@ import org.epam.swissre.coffeeshop.enums.OrangeJuiceSize;
  * Represents a OrangeJuice product, extending the abstract Product class.
  * Includes additional properties such as size.
  */
-public class OrangeJuice extends Product {
+public class OrangeJuice extends Product implements BeverageProduct {
 
     /**
      * Constructs a new OrangeJuice instance including size information.

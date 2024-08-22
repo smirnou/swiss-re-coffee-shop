@@ -14,14 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class OrderTest {
     private Order order;
-    private Product product1;
-    private Product product2;
 
     @BeforeEach
     public void setUp() {
         // Set up with dummy products, assuming there are concrete classes, or you could mock them
-        product1 = new Coffee(CoffeeSize.LARGE);
-        product2 = new ExtraItem(ExtraOption.EXTRA_MILK);
+        Product product1 = new Coffee(CoffeeSize.LARGE);
+        Product product2 = new ExtraItem(ExtraOption.EXTRA_MILK);
 
         ArrayList<Product> products = new ArrayList<>();
         products.add(product1);

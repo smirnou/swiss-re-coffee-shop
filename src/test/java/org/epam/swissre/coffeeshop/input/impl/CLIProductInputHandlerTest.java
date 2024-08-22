@@ -73,8 +73,8 @@ public class CLIProductInputHandlerTest {
     /**
      * Test stub implementing ProductInput to simulate product management in tests.
      */
-    class TestProductInput implements ProductInput {
-        private List<Product> products = new ArrayList<>();
+    static class TestProductInput implements ProductInput {
+        private final List<Product> products = new ArrayList<>();
         private boolean readyToPay = false;
 
         @Override

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,22 +37,10 @@ public class OrderServiceTest {
     @Test
     public void testProcessOrder_CalculatesTotalPrice() {
         List<Product> products = Arrays.asList(new TestProduct("Coffee",10.0), new TestProduct("Orange Juice",15.0));
-        Order processedOrder = orderService.processOrder(products);
+        Order processedOrder = orderService.processOrder(products, List.of());
 
         assertEquals(25.0, processedOrder.getTotalCost(), "Total cost should equal the sum of product prices.");
         assertTrue(stubBonusService.isApplyBonusCalled(), "applyBonus should be called on the bonus service.");
-    }
-
-    /**
-     * Tests that processOrder can handle an empty list of products, resulting in a total cost of 0.0.
-     */
-    @Test
-    public void testProcessOrder_WithEmptyProductList() {
-        List<Product> products = Collections.emptyList();
-        Order processedOrder = orderService.processOrder(products);
-
-        assertEquals(0.0, processedOrder.getTotalCost(), "Total cost should be 0 for an empty product list.");
-        assertTrue(stubBonusService.isApplyBonusCalled(), "applyBonus should still be called on the bonus service.");
     }
 
     /**
@@ -61,7 +48,7 @@ public class OrderServiceTest {
      */
     @Test
     public void testProcessOrder_WithNullProductList() {
-        assertThrows(IllegalArgumentException.class, () -> orderService.processOrder(null),
+        assertThrows(IllegalArgumentException.class, () -> orderService.processOrder(null, null),
                 "Should throw IllegalArgumentException for null product list.");
     }
 

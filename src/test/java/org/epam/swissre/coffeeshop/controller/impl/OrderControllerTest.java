@@ -5,9 +5,12 @@ import org.epam.swissre.coffeeshop.model.Order;
 import org.epam.swissre.coffeeshop.model.Product;
 import org.epam.swissre.coffeeshop.receipt.ReceiptPresenter;
 import org.epam.swissre.coffeeshop.service.IOrderService;
+import org.epam.swissre.coffeeshop.service.IOrderStorage;
 import org.epam.swissre.coffeeshop.service.IPaymentService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderControllerTest {
     private IOrderController orderController;
     private StubOrderService orderService;
+    private StubOrderStorage orderStorage;
     private StubPaymentService paymentService;
     private TestableReceiptPresenter receiptPresenter;
 
@@ -36,9 +40,10 @@ class OrderControllerTest {
     @BeforeEach
     void setUp() {
         orderService = new StubOrderService();
+        orderStorage = new StubOrderStorage();
         paymentService = new StubPaymentService();
         receiptPresenter = new TestableReceiptPresenter();
-        orderController = new OrderController(orderService, paymentService, receiptPresenter);
+        orderController = new OrderController(orderService, orderStorage, paymentService, receiptPresenter);
     }
 
     /**
@@ -63,13 +68,29 @@ class OrderControllerTest {
         private boolean orderProcessed = false;
 
         @Override
-        public Order processOrder(List<Product> products) {
+        public Order processOrder(List<Product> newProducts, List<Product> alreadyPaidProducts) {
             orderProcessed = true;
-            return new Order(products); // Simulate an order
+            return new Order(newProducts); // Simulate an order
         }
 
         boolean isOrderProcessed() {
             return orderProcessed;
+        }
+    }
+
+    /**
+     * Stub implementation of the {@link IOrderStorage} to simulate storing data.
+     */
+    static class StubOrderStorage implements IOrderStorage {
+
+        @Override
+        public void storeOrders(List<Order> orders) {
+            // stub is empty
+        }
+
+        @Override
+        public List<Order> retrieveOrders() {
+            return List.of();
         }
     }
 

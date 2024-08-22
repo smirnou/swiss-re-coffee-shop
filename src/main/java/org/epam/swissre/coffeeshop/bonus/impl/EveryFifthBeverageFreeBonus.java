@@ -23,14 +23,19 @@ public class EveryFifthBeverageFreeBonus implements BonusStrategy {
     @Override
     public void apply(Order order) {
         List<Product> beverages = getBeverages(order.getProducts());
+        int previousBeverageCount = getBeverages(order.getAlreadyPaidProducts()).size();
+        int totalBeverages = previousBeverageCount + beverages.size();
 
-        // Use IntStream to generate indices, filter by each fifth index, then map to corresponding beverage prices
-        double totalDiscount = IntStream.range(0, beverages.size())
-                .filter(index -> (index + 1) % FREE_BEVERAGE_INTERVAL == 0)
-                .mapToDouble(index -> beverages.get(index).getPrice())
-                .sum();
+        if (!beverages.isEmpty() && totalBeverages >= FREE_BEVERAGE_INTERVAL) {
+            // Calculates the discount by applying a free beverage for every fifth beverage ordered,
+            // taking into account both previous and current session beverage counts.
+            double totalDiscount = IntStream.range(previousBeverageCount, totalBeverages)
+                    .filter(index -> (index + 1) % FREE_BEVERAGE_INTERVAL == 0)
+                    .mapToDouble(index -> beverages.get((index - previousBeverageCount) % beverages.size()).getPrice())
+                    .sum();
 
-        order.applyDiscount(totalDiscount);
+            order.applyDiscount(totalDiscount);
+        }
     }
 
     /**
@@ -40,6 +45,6 @@ public class EveryFifthBeverageFreeBonus implements BonusStrategy {
      * @return a list of products that are instances of beverages.
      */
     private List<Product> getBeverages(List<Product> products) {
-        return products.stream().filter(i -> i instanceof Coffee || i instanceof OrangeJuice).toList();
+        return products.stream().filter(i -> i instanceof BeverageProduct).toList();
     }
 }

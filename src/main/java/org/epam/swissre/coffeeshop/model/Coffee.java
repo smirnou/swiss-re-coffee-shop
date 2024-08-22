@@ -6,7 +6,7 @@ import org.epam.swissre.coffeeshop.enums.CoffeeSize;
  * Represents a Coffee product, extending the abstract Product class.
  * Includes additional properties such as size and a list of extras.
  */
-public class Coffee extends Product {
+public class Coffee extends Product implements BeverageProduct {
     // TODO: private List<ExtraItem> extras; // Consider adding extras to the Coffee class  if needed, rather than adding Extra item directly to the Order List<Product>
 
     /**

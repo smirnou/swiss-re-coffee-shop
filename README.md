@@ -1,6 +1,6 @@
 #  Swiss Re: Coffee Shop PoC
 
-This project is a Command Line Interface (CLI) based application designed for managing orders in a coffee shop.
+This project is a Command Line Interface (CLI) based application designed for managing orders in a CoffeeShop application.
 It allows users to add products to an order, review the order, confirm it, and process payments.
 
 ## Features
@@ -36,6 +36,11 @@ To run the **Coffee Shop** application, please execute:
 ```bash
 java -jar target/swiss-re-coffee-shop-1.0-SNAPSHOT.jar
 ```
+## Changelog
+
+Keep track of all changes to this project in the [CHANGELOG](CHANGELOG.md). The changelog includes a detailed list of updates, bug fixes, and new feature additions for each version of the CoffeeShop application.
+
+You can view the full changelog [here](./CHANGELOG.md).
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for more details.

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -21,6 +22,36 @@ public class EveryFifthBeverageFreeBonusTest {
     @BeforeEach
     public void setUp() {
         bonusStrategy = new EveryFifthBeverageFreeBonus();
+    }
+
+    /**
+     * Test application of discount considering previously paid beverages.
+     */
+    @Test
+    public void testApplyBonus_WithPreviousBeverages() {
+        List<Product> alreadyPaidProducts = createBeveragesList(3); // Assume three beverages were already paid
+        List<Product> currentProducts = createBeveragesList(2); // Two more beverages, making it five in total
+        order = new Order(currentProducts);
+        order.setAlreadyPaidProducts(alreadyPaidProducts);
+        bonusStrategy.apply(order);
+
+        double expectedDiscount = currentProducts.get(1).getPrice(); // Discount should match the price of the 5th beverage overall
+        assertEquals(expectedDiscount, order.getTotalDiscount(), "Discount should be applied considering previous purchases.");
+    }
+
+    /**
+     * Test multiple intervals, including transitions across newly purchased and previously paid beverages.
+     */
+    @Test
+    public void testApplyBonus_WithMultipleIntervals() {
+        List<Product> alreadyPaidProducts = createBeveragesList(9); // Nine beverages previously paid
+        List<Product> currentProducts = createBeveragesList(6); // Six more beverages, 15 beverages in total
+        order = new Order(currentProducts);
+        order.setAlreadyPaidProducts(alreadyPaidProducts);
+        bonusStrategy.apply(order);
+
+        double expectedDiscount = currentProducts.get(0).getPrice() + currentProducts.get(5).getPrice(); // Discounts on the 10th and 15th bebverage
+        assertEquals(expectedDiscount, order.getTotalDiscount(), "Discount should sum the 10th and 15th beverages.");
     }
 
     /**

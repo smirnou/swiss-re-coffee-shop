@@ -1,4 +1,4 @@
-# Maven build folder
+### Maven build folder
 target/
 
 ### IntelliJ IDEA ###
@@ -12,3 +12,6 @@ target/
 
 ### Mac OS ###
 .DS_Store
+
+### Project files
+*.csv

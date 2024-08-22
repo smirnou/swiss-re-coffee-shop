@@ -34,22 +34,33 @@ public class OrderService implements IOrderService {
      * then calculating the total price of all included products. This method also checks
      * additional business rules related to discounts and bonuses.
      *
-     * @param products The list of products in the order.
+     * @param newProducts The list of products in the order.
      * @return A processed Order instance containing details on the total price, eligibility for promotions.
      */
     @Override
-    public Order processOrder(List<Product> products) {
-        Order order = new Order(products);
+    public Order processOrder(List<Product> newProducts, List<Product> alreadyPaidProducts) {
+        if (newProducts == null || newProducts.isEmpty()) {
+            throw new IllegalArgumentException("Product list cannot be null or empty.");
+        }
 
-        // Calculate total price after promotions might have modified the order
-        double totalPrice = calculateTotalPrice(order.getProducts());
-        order.setTotalCost(totalPrice);
+        Order order = new Order(newProducts);
+        if (!alreadyPaidProducts.isEmpty()) {
+            order.setAlreadyPaidProducts(alreadyPaidProducts); // for the next calculation of discount (bonus)
+        }
 
-        // Apply promotions (bonuses)
-        bonusService.applyBonus(order);
+        try {
+            // Calculate total price after promotions might have modified the order
+            double totalPrice = calculateTotalPrice(order.getProducts());
+            order.setTotalCost(totalPrice);
 
-        // Here you might want to apply other business rules or further adjustments
-        return order;
+            // Apply promotions (bonuses)
+            bonusService.applyBonus(order);
+
+            // Here you might want to apply other business rules or further adjustments
+            return order;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to process the order.", e);
+        }
     }
 
     /**

@@ -11,7 +11,6 @@ import org.epam.swissre.coffeeshop.util.FormatUtils;
 
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -93,7 +92,7 @@ public class CLIProductInputHandler implements ProductInputHandler {
         System.out.println("1 - Order Coffee");
         System.out.println("2 - Order Orange Juice");
         System.out.println("3 - Order Bacon Roll");
-        System.out.println("4 - Add Extra Items");
+        System.out.println("4 - Add Extras (to coffee)");
         System.out.println("5 - Review & Confirm Order");
         System.out.println("6 - Go to Payment");
         System.out.println("7 - Exit (without payment)");
@@ -134,8 +133,6 @@ public class CLIProductInputHandler implements ProductInputHandler {
     }
 
     private void orderExtra() {
-        boolean isValidInput = false; // Flag to check if input is valid
-
         // simple validation, it can be changed with requirements and moved to the ProductValidator class
         if (!hasCoffee(productInput.getProducts())) {
             System.out.println("First select coffee and then you can add Extra items.");
