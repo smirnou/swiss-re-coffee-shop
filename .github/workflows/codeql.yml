@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java' ]
+        language: ['java']
 
     steps:
     - name: Checkout repository
@@ -42,7 +42,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-      
+        
     - name: Cache Maven packages
       uses: actions/cache@v3
       with:
@@ -52,14 +52,13 @@ jobs:
           ${{ runner.os }}-m2
 
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        tools: true
-  
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
 
