@@ -2,7 +2,14 @@
 
 This document maintains a log of changes for each release of the CoffeeShop application.
 
+## [1.3-SNAPSHOT] - 2024-08-23
+
+### Changed
+- Created a new snapshot version. No changes or new features introduced in this snapshot, solely an increment to the version number to align with development and versioning protocols.
+
 ## [1.2-SNAPSHOT] - 2024-08-22
+
+> Artifact is available [here](https://github.com/smirnou/swiss-re-coffee-shop/actions/runs/10524296112)
 
 ### Added
 - Integration of the JaCoCo Maven plugin to generate coverage reports.
