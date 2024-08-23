@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Swiss Re Coffee Shop</a> &gt; <a href="index.source.html" class="el_package">org.epam.swissre.coffeeshop.service.impl</a> &gt; <span class="el_source">OrderService.java</span></div><h1>OrderService.java</h1><pre class="source lang-java linenums">package org.epam.swissre.coffeeshop.service.impl;
+
+import org.epam.swissre.coffeeshop.model.Order;
+import org.epam.swissre.coffeeshop.model.Product;
+import org.epam.swissre.coffeeshop.service.IBonusService;
+import org.epam.swissre.coffeeshop.service.IOrderService;
+
+import java.util.List;
+
+/**
+ * Service class responsible for handling orders and their related operations,
+ * including applying any promotional strategies prior to finalizing the order total.
+ * The class interfaces with BonusService to apply promotions and calculates total
+ * prices depending on the result of those promotions.
+ * OrderService serves as a critical component in the business logic layer of the application,
+ * managing the retrieval, processing, and aggregation of order data to ensure that all order-related actions
+ * are executed based on the defined business rules.
+ */
+public class OrderService implements IOrderService {
+
+    private final IBonusService bonusService;
+
+    /**
+     * Constructor for OrderService.
+     *
+     * @param bonusService The bonus service to apply promotions.
+     */
+<span class="fc" id="L28">    public OrderService(IBonusService bonusService) {</span>
+<span class="fc" id="L29">        this.bonusService = bonusService;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Processes an order, starting by applying applicable promotions from the bonus service,
+     * then calculating the total price of all included products. This method also checks
+     * additional business rules related to discounts and bonuses.
+     *
+     * @param newProducts The list of products in the order.
+     * @return A processed Order instance containing details on the total price, eligibility for promotions.
+     */
+    @Override
+    public Order processOrder(List&lt;Product&gt; newProducts, List&lt;Product&gt; alreadyPaidProducts) {
+<span class="pc bpc" id="L42" title="1 of 4 branches missed.">        if (newProducts == null || newProducts.isEmpty()) {</span>
+<span class="fc" id="L43">            throw new IllegalArgumentException(&quot;Product list cannot be null or empty.&quot;);</span>
+        }
+
+<span class="fc" id="L46">        Order order = new Order(newProducts);</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (!alreadyPaidProducts.isEmpty()) {</span>
+<span class="nc" id="L48">            order.setAlreadyPaidProducts(alreadyPaidProducts); // for the next calculation of discount (bonus)</span>
+        }
+
+        try {
+            // Calculate total price after promotions might have modified the order
+<span class="fc" id="L53">            double totalPrice = calculateTotalPrice(order.getProducts());</span>
+<span class="fc" id="L54">            order.setTotalCost(totalPrice);</span>
+
+            // Apply promotions (bonuses)
+<span class="fc" id="L57">            bonusService.applyBonus(order);</span>
+
+            // Here you might want to apply other business rules or further adjustments
+<span class="fc" id="L60">            return order;</span>
+<span class="nc" id="L61">        } catch (Exception e) {</span>
+<span class="nc" id="L62">            throw new RuntimeException(&quot;Failed to process the order.&quot;, e);</span>
+        }
+    }
+
+    /**
+     * Calculates the total price of products included in an order.
+     * This is the gross total before any additional adjustments such as taxes.
+     *
+     * @param products A list of Product instances representing the items in an order.
+     * @return The cumulative price of all products, represented as a double value.
+     */
+    private double calculateTotalPrice(List&lt;Product&gt; products) {
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (products == null) {</span>
+<span class="nc" id="L75">            throw new IllegalArgumentException(&quot;Product list cannot be null&quot;);</span>
+        }
+<span class="fc" id="L77">        return products.stream()</span>
+<span class="fc" id="L78">                .mapToDouble(Product::getPrice)</span>
+<span class="fc" id="L79">                .sum();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

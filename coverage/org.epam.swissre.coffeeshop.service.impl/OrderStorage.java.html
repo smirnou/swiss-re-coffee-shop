@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderStorage.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Swiss Re Coffee Shop</a> &gt; <a href="index.source.html" class="el_package">org.epam.swissre.coffeeshop.service.impl</a> &gt; <span class="el_source">OrderStorage.java</span></div><h1>OrderStorage.java</h1><pre class="source lang-java linenums">package org.epam.swissre.coffeeshop.service.impl;
+
+import org.epam.swissre.coffeeshop.model.*;
+import org.epam.swissre.coffeeshop.service.IOrderStorage;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This class manages the storage and retrieval of Orders, specifically the products within an order,
+ * to and from a CSV file. It ensures proper file handling to facilitate multiple successive
+ * application executions without data loss or corruption.
+ */
+public class OrderStorage implements IOrderStorage {
+
+    private final String filePath;
+
+    /**
+     * Constructs an OrderStorage object linked to a specified file path. If the CSV file does not exist,
+     * it attempts to create a new one.
+     *
+     * @param filePath the path where the CSV file is stored or will be created.
+     */
+<span class="fc" id="L28">    public OrderStorage(String filePath) {</span>
+<span class="fc" id="L29">        this.filePath = filePath;</span>
+<span class="fc" id="L30">        File file = new File(filePath);</span>
+        try {
+            // Attempt to create the file if it does not already exist
+<span class="fc" id="L33">            boolean isNewFileCreated = file.createNewFile();</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">            if (isNewFileCreated) {</span>
+                // Log or handle the case where a new file had to be created
+<span class="nc" id="L36">                System.out.println(&quot;A new file was successfully created at: &quot; + filePath);</span>
+            } else {
+                // The file already exists, you might want to log this info
+<span class="fc" id="L39">                System.out.println(&quot;File already exists at: &quot; + filePath);</span>
+            }
+<span class="nc" id="L41">        } catch (IOException e) {</span>
+<span class="nc" id="L42">            throw new RuntimeException(&quot;Failed to initialize storage file.&quot;, e);</span>
+<span class="fc" id="L43">        }</span>
+<span class="fc" id="L44">    }</span>
+
+    /**
+     * Stores new orders in the CSV file by appending them after existing orders. It first reads
+     * the current file contents, adds the new orders, and rewrites the combined list into the file
+     * to maintain continuity across multiple application runs.
+     *
+     * @param newOrders a list of new orders to be appended to the file.
+     * @throws IOException if an error occurs during file operation.
+     */
+    @Override
+    public void storeOrders(List&lt;Order&gt; newOrders) throws IOException {
+<span class="fc" id="L56">        List&lt;Order&gt; existingOrders = retrieveOrders();</span>
+<span class="fc" id="L57">        existingOrders.addAll(newOrders);</span>
+
+<span class="fc" id="L59">        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath), StandardOpenOption.TRUNCATE_EXISTING)) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            for (Order order : existingOrders) {</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">                if (order != null) {</span>
+<span class="fc" id="L62">                    String csvLine = orderToCsvLine(order);</span>
+                    // Ensure not to write empty csv lines
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">                    if (!csvLine.isEmpty()) {</span>
+<span class="fc" id="L65">                        writer.write(csvLine);</span>
+<span class="fc" id="L66">                        writer.newLine();</span>
+                    }
+                }
+<span class="fc" id="L69">            }</span>
+        }
+<span class="fc" id="L71">    }</span>
+
+    /**
+     * Retrieves all orders from the CSV file, ensuring consistent data availability across
+     * multiple executions of the application.
+     *
+     * @return a list of all orders retrieved from the CSV file.
+     * @throws IOException if an error occurs during file reading.
+     */
+    @Override
+    public List&lt;Order&gt; retrieveOrders() throws IOException {
+<span class="fc" id="L82">        List&lt;Order&gt; orders = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L83">        try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {</span>
+            String line;
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            while ((line = reader.readLine()) != null) {</span>
+<span class="fc" id="L86">                orders.add(csvLineToOrder(line));</span>
+            }
+        }
+<span class="fc" id="L89">        return orders;</span>
+    }
+
+    /**
+     * Converts a given Order object into a CSV formatted string.
+     *
+     * @param order the order to convert.
+     * @return a CSV formatted string representing the order's products.
+     */
+    private String orderToCsvLine(Order order) {
+<span class="fc" id="L99">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L100">        List&lt;Product&gt; productsToStore = order.getProducts().stream().filter(i -&gt; i instanceof BeverageProduct).toList();</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        for (Product product : productsToStore) {</span>
+<span class="fc" id="L102">            sb.append(product.getName()).append(&quot;,&quot;).append(product.getPrice()).append(&quot;;&quot;);</span>
+<span class="fc" id="L103">        }</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (!sb.isEmpty()) {</span>
+<span class="fc" id="L105">            sb.deleteCharAt(sb.length() - 1); // Remove the last semicolon</span>
+        }
+<span class="fc" id="L107">        return sb.toString();</span>
+    }
+
+    /**
+     * Parses a CSV formatted string to construct an Order object.
+     * Ensures that the parser is robust against empty and malformed CSV lines.
+     *
+     * @param csvLine the string containing CSV formatted order data.
+     * @return an Order constructed from the parsed data, or null if the csvLine is empty or malformed.
+     */
+    private Order csvLineToOrder(String csvLine) {
+<span class="pc bpc" id="L118" title="2 of 4 branches missed.">        if (csvLine == null || csvLine.isEmpty()) {</span>
+<span class="nc" id="L119">            return null; // or optionally, return new Order(new ArrayList&lt;&gt;()) to signify an empty order</span>
+        }
+
+<span class="fc" id="L122">        String[] productDetails = csvLine.split(&quot;;&quot;);</span>
+<span class="fc" id="L123">        List&lt;Product&gt; products = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        for (String detail : productDetails) {</span>
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">            if (detail.isEmpty()) {</span>
+<span class="nc" id="L127">                continue; // skip empty product entries</span>
+            }
+
+<span class="fc" id="L130">            String[] product = detail.split(&quot;,&quot;);</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">            if (product.length &lt; 2) {</span>
+<span class="nc" id="L132">                continue; // skip this detail if it's not complete</span>
+            }
+
+<span class="fc" id="L135">            String name = product[0].trim(); // trim to remove any unwanted whitespace</span>
+<span class="fc" id="L136">            double price = parsePrice(product[1].trim());</span>
+<span class="pc bpc" id="L137" title="2 of 4 branches missed.">            if (name.isEmpty() || Double.isNaN(price)) {</span>
+<span class="nc" id="L138">                continue; // skip malformed entries</span>
+            }
+
+<span class="fc" id="L141">            products.add(new ConcreteProduct(name, price));</span>
+        }
+
+<span class="fc" id="L144">        return new Order(products);</span>
+    }
+
+    /**
+     * Safely parses a string to a double, handling possible number format exceptions.
+     *
+     * @param price the string representing the price.
+     * @return the parsed double if valid, or Double.NaN if the string is not a valid double.
+     */
+    private double parsePrice(String price) {
+        try {
+<span class="fc" id="L155">            return Double.parseDouble(price);</span>
+<span class="nc" id="L156">        } catch (NumberFormatException e) {</span>
+<span class="nc" id="L157">            return Double.NaN; // signify an invalid price</span>
+        }
+    }
+
+    /**
+     * A concrete implementation of the abstract Product class, allowing instantiation of product objects
+     * necessary for storing order details.
+     */
+    private static class ConcreteProduct extends Product implements BeverageProduct {
+        public ConcreteProduct(String name, double price) {
+<span class="fc" id="L167">            super(name, price);</span>
+<span class="fc" id="L168">        }</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

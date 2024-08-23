@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReceiptRow.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Swiss Re Coffee Shop</a> &gt; <a href="index.source.html" class="el_package">org.epam.swissre.coffeeshop.receipt</a> &gt; <span class="el_source">ReceiptRow.java</span></div><h1>ReceiptRow.java</h1><pre class="source lang-java linenums">package org.epam.swissre.coffeeshop.receipt;
+
+/**
+ * Represents a single row in a receipt that includes the description and price of an item (product).
+ */
+public class ReceiptRow {
+    private String description;
+    private double price;
+
+    /**
+     * Constructs a new ReceiptRow with a specified description and price.
+     *
+     * @param description the description of the item
+     * @param price the price of the item
+     */
+<span class="fc" id="L16">    public ReceiptRow(String description, double price) {</span>
+<span class="fc bfc" id="L17" title="All 4 branches covered.">        if (description == null || description.isEmpty()) {</span>
+<span class="fc" id="L18">            throw new IllegalArgumentException(&quot;Receipt description cannot be null or empty.&quot;);</span>
+        }
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (price &lt; 0) {</span>
+<span class="fc" id="L21">            throw new IllegalArgumentException(&quot;Receipt product price cannot be negative.&quot;);</span>
+        }
+<span class="fc" id="L23">        this.description = description;</span>
+<span class="fc" id="L24">        this.price = price;</span>
+<span class="fc" id="L25">    }</span>
+
+    /**
+     * Gets the description of the item in this receipt row.
+     *
+     * @return a string representing the description of the item
+     */
+    public String getDescription() {
+<span class="fc" id="L33">        return description;</span>
+    }
+
+    /**
+     * Sets the description for this receipt row.
+     *
+     * @param description the new description of the item
+     */
+    public void setDescription(String description) {
+<span class="fc" id="L42">        this.description = description;</span>
+<span class="fc" id="L43">    }</span>
+
+    /**
+     * Gets the price of the item in this receipt row.
+     *
+     * @return the price of the item
+     */
+    public double getPrice() {
+<span class="fc" id="L51">        return price;</span>
+    }
+
+    /**
+     * Sets the price for this receipt row.
+     *
+     * @param price the new price of the item (product)
+     */
+    public void setPrice(double price) {
+<span class="fc" id="L60">        this.price = price;</span>
+<span class="fc" id="L61">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

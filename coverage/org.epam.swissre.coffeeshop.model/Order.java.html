@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Order.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Swiss Re Coffee Shop</a> &gt; <a href="index.source.html" class="el_package">org.epam.swissre.coffeeshop.model</a> &gt; <span class="el_source">Order.java</span></div><h1>Order.java</h1><pre class="source lang-java linenums">package org.epam.swissre.coffeeshop.model;
+
+import org.epam.swissre.coffeeshop.enums.OrderStatus;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Represents an order in the coffee shop, which can contain multiple products.
+ * This class manages the collection of products, and the various states and financial
+ * attributes of an order, such as total cost and discounts applied.
+ */
+public class Order implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    private final List&lt;Product&gt; products;
+    private List&lt;Product&gt; alreadyPaidProducts;
+    private OrderStatus status; // Assuming an enum exists for OrderStatus
+    private double totalCost;
+    private double totalDiscount;
+
+    /**
+     * Constructs a new Order with a specified list of products.
+     * Sets the order status to OPEN upon creation.
+     *
+     * @param products A list of products that constitutes the order.
+     */
+<span class="fc" id="L30">    public Order(List&lt;Product&gt; products) {</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (products == null) {</span>
+<span class="fc" id="L32">            throw new IllegalArgumentException(&quot;Products cannot be null&quot;);</span>
+        }
+<span class="fc" id="L34">        this.products = products;</span>
+<span class="fc" id="L35">        this.alreadyPaidProducts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L36">        this.status = OrderStatus.OPEN;</span>
+<span class="fc" id="L37">        this.totalCost = 0.0;</span>
+<span class="fc" id="L38">        this.totalDiscount = 0.0;</span>
+<span class="fc" id="L39">        recalculateTotalCost();</span>
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * Adds a product to the order.
+     *
+     * @param product The product to add to the order.
+     * @throws IllegalArgumentException if the product is null.
+     */
+    public void addProduct(Product product) {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (product == null) {</span>
+<span class="fc" id="L50">            throw new IllegalArgumentException(&quot;Product cannot be null&quot;);</span>
+        }
+<span class="fc" id="L52">        products.add(product);</span>
+<span class="fc" id="L53">        recalculateTotalCost();</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * Provides the list of products in this order.
+     *
+     * @return An unmodifiable list of the products.
+     */
+    public List&lt;Product&gt; getProducts() {
+<span class="fc" id="L62">        return List.copyOf(products);</span>
+    }
+
+    public void setAlreadyPaidProducts(List&lt;Product&gt; alreadyPaidProducts) {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (alreadyPaidProducts == null) {</span>
+<span class="fc" id="L67">            throw new IllegalArgumentException(&quot;Product list cannot be null&quot;);</span>
+        }
+<span class="fc" id="L69">        this.alreadyPaidProducts = alreadyPaidProducts;</span>
+<span class="fc" id="L70">    }</span>
+
+    public List&lt;Product&gt; getAlreadyPaidProducts() {
+<span class="fc" id="L73">        return List.copyOf(alreadyPaidProducts);</span>
+    }
+
+    /**
+     * Retrieves the current order status.
+     *
+     * @return The current status of the order.
+     */
+    public OrderStatus getStatus() {
+<span class="fc" id="L82">        return this.status;</span>
+    }
+
+    /**
+     * Sets the status of the order.
+     *
+     * @param status The new status of this order.
+     * @throws IllegalArgumentException if the status is null.
+     */
+    public void setStatus(OrderStatus status) {
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (status == null) {</span>
+<span class="fc" id="L93">            throw new IllegalArgumentException(&quot;Order status cannot be null&quot;);</span>
+        }
+<span class="fc" id="L95">        this.status = status;</span>
+<span class="fc" id="L96">    }</span>
+
+    /**
+     * Gets the total cost of the products in the order.
+     *
+     * @return The total cost of the products.
+     */
+    public double getTotalCost() {
+<span class="fc" id="L104">        return this.totalCost;</span>
+    }
+
+    /**
+     * Sets the total cost of the order.
+     *
+     * @param totalCost The total cost to be set.
+     */
+    public void setTotalCost(double totalCost) {
+<span class="fc" id="L113">        this.totalCost = totalCost;</span>
+<span class="fc" id="L114">    }</span>
+
+    /**
+     * Applies a discount to the order, adjusting the total cost.
+     *
+     * @param discount The discount amount to apply.
+     * @throws IllegalArgumentException if the discount is negative.
+     */
+    public void applyDiscount(double discount) {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        if (discount &lt; 0) {</span>
+<span class="fc" id="L124">            throw new IllegalArgumentException(&quot;Discount cannot be negative&quot;);</span>
+        }
+<span class="fc" id="L126">        this.totalDiscount += discount;</span>
+<span class="fc" id="L127">        this.totalCost -= discount;</span>
+<span class="fc" id="L128">    }</span>
+
+    /**
+     * Retrieves the total discount applied to this order.
+     *
+     * @return The total discount amount.
+     */
+    public double getTotalDiscount() {
+<span class="fc" id="L136">        return this.totalDiscount;</span>
+    }
+
+    /**
+     * Recalculates the total cost based on the current list of products.
+     * It sums up the price of all products and applies any existing discounts.
+     */
+    private void recalculateTotalCost() {
+<span class="fc" id="L144">        totalCost = products.stream().mapToDouble(Product::getPrice).sum() - totalDiscount;</span>
+<span class="fc" id="L145">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

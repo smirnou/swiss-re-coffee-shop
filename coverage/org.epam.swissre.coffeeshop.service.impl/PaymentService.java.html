@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Swiss Re Coffee Shop</a> &gt; <a href="index.source.html" class="el_package">org.epam.swissre.coffeeshop.service.impl</a> &gt; <span class="el_source">PaymentService.java</span></div><h1>PaymentService.java</h1><pre class="source lang-java linenums">package org.epam.swissre.coffeeshop.service.impl;
+
+import org.epam.swissre.coffeeshop.enums.OrderStatus;
+import org.epam.swissre.coffeeshop.model.Order;
+import org.epam.swissre.coffeeshop.service.IPaymentService;
+
+/**
+ * Service class responsible for handling financial transactions related to orders. This class is pivotal
+ * in ensuring that all payment-related activities align with the organization's financial policies and business rules.
+ * PaymentService is a crucial component in the financial layer of the application, interfacing directly
+ * with mechanisms that finalize the pricing structure established post-order calculations and promotional applications.
+ */
+<span class="fc" id="L13">public class PaymentService implements IPaymentService {</span>
+
+    /**
+     * Processes the payment for an order based on the final calculated price post-discounts and promotions.
+     * This method is crucial for finalizing the commercial transaction and ensuring accurate financial management.
+     *
+     * @param order The order for which the payment is being processed.
+     */
+    public void processPayment(Order order) {
+<span class="fc" id="L22">        performPaymentTransaction(order);</span>
+<span class="fc" id="L23">    }</span>
+
+    /**
+     * Simulates the process of executing a transaction. In a real-life scenario, this method would interface
+     * with external payment providers to perform the financial transaction.
+     *
+     * @param order The order for which the payment is being processed.
+     */
+    private void performPaymentTransaction(Order order) {
+        // Log or system print out for demonstration
+<span class="fc" id="L33">        System.out.printf(&quot;\nTransaction completed. Amount charged: CHF %.2f%n&quot;, order.getTotalCost());</span>
+
+<span class="fc" id="L35">        order.setStatus(OrderStatus.PAID);</span>
+<span class="fc" id="L36">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReceiptPresenter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Swiss Re Coffee Shop</a> &gt; <a href="index.source.html" class="el_package">org.epam.swissre.coffeeshop.receipt</a> &gt; <span class="el_source">ReceiptPresenter.java</span></div><h1>ReceiptPresenter.java</h1><pre class="source lang-java linenums">package org.epam.swissre.coffeeshop.receipt;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Abstract class for presenting receipts. This class provides the base functionality to
+ * add and manage receipt rows.
+ */
+public abstract class ReceiptPresenter {
+    private final List&lt;ReceiptRow&gt; receiptRows;
+<span class="fc" id="L12">    private double totalCost = 0.0;</span>
+<span class="fc" id="L13">    private double totalDiscount = 0.0;</span>
+
+    /**
+     * Constructor to initialize the ReceiptPresenter.
+     */
+<span class="fc" id="L18">    public ReceiptPresenter() {</span>
+<span class="fc" id="L19">        this.receiptRows = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L20">    }</span>
+
+    /**
+     * Adds a receipt row to the list of receipt rows.
+     *
+     * @param row the ReceiptRow to be added
+     */
+    public void addReceiptRow(ReceiptRow row) {
+<span class="fc" id="L28">        this.receiptRows.add(row);</span>
+<span class="fc" id="L29">    }</span>
+
+    /**
+     * Presents the receipt. The concrete implementation should define how the receipt is displayed.
+     */
+    public abstract void presentReceipt();
+
+    public List&lt;ReceiptRow&gt; getReceiptRows() {
+<span class="fc" id="L37">        return receiptRows;</span>
+    }
+
+    public double getTotalCost() {
+<span class="fc" id="L41">        return totalCost;</span>
+    }
+
+    public void setTotalCost(double totalCost) {
+<span class="fc" id="L45">        this.totalCost = totalCost;</span>
+<span class="fc" id="L46">    }</span>
+
+    public double getTotalDiscount() {
+<span class="fc" id="L49">        return totalDiscount;</span>
+    }
+
+    public void setTotalDiscount(double totalDiscount) {
+<span class="fc" id="L53">        this.totalDiscount = totalDiscount;</span>
+<span class="fc" id="L54">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

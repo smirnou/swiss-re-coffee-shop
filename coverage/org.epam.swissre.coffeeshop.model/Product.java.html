@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Product.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Swiss Re Coffee Shop</a> &gt; <a href="index.source.html" class="el_package">org.epam.swissre.coffeeshop.model</a> &gt; <span class="el_source">Product.java</span></div><h1>Product.java</h1><pre class="source lang-java linenums">package org.epam.swissre.coffeeshop.model;
+
+import java.util.Objects;
+
+/**
+ * Abstract class representing a general product in the coffee shop.
+ * This class is intended to be extended by specific product types.
+ * Provides common properties like name, and price.
+ */
+public abstract class Product {
+    private final String name;
+    private final double price;
+
+    /**
+     * Constructs a new Product instance with specified name and price. This constructor
+     * initializes the product with immutable values, providing thread safety and ensuring
+     * that product details remain consistent throughout their lifecycle.
+     *
+     * @param name The name of the product, representing the identity or the type of product.
+     *             This is expected to be a non-null and meaningful description.
+     * @param price The price of the product, expected to be a non-negative value indicating
+     *              the cost to the customer.
+     */
+<span class="fc" id="L24">    public Product(String name, double price) {</span>
+<span class="pc bpc" id="L25" title="1 of 4 branches missed.">        if (name == null || name.isEmpty()) {</span>
+<span class="fc" id="L26">            throw new IllegalArgumentException(&quot;Product name cannot be null or empty.&quot;);</span>
+        }
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (price &lt; 0) {</span>
+<span class="fc" id="L29">            throw new IllegalArgumentException(&quot;Product price cannot be negative.&quot;);</span>
+        }
+<span class="fc" id="L31">        this.name = name;</span>
+<span class="fc" id="L32">        this.price = price;</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Gets the product's name.
+     * @return The name of the product which is a non-modifiable string.
+     */
+    public String getName() {
+<span class="fc" id="L40">        return name;</span>
+    }
+
+    /**
+     * Gets the product's price.
+     * @return The price of the product, provided as a positive double value.
+     */
+    public double getPrice() {
+<span class="fc" id="L48">        return price;</span>
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if (this == o) return true;</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">        if (o == null || getClass() != o.getClass()) return false;</span>
+<span class="fc" id="L55">        Product product = (Product) o;</span>
+<span class="fc bfc" id="L56" title="All 4 branches covered.">        return Double.compare(product.price, price) == 0 &amp;&amp; Objects.equals(name, product.name);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L61">        return Objects.hash(name, price);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
