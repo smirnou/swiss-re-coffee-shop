@@ -40,6 +40,7 @@ public class SimpleProductInput implements ProductInput {
             throw new IllegalArgumentException("Product cannot be null");
         }
         products.add(product);
+        readyToPay = false; // the order must be confirmed separately
     }
 
     /**

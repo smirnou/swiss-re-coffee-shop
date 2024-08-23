@@ -61,4 +61,27 @@ public class SimpleProductInputTest {
         productInput.setReadyToPay(true);
         assertTrue(productInput.isReadyToPay(), "Should be ready to pay after setter call.");
     }
+
+    /**
+     * Verifies that adding a product after setting the order as ready to pay
+     * resets the readyToPay flag to false. This ensures that users must re-confirm
+     * their order after modifying it, safeguarding against unintentional checkouts.
+     */
+    @Test
+    void whenAddProductAfterConfirm_thenReadyToPayResets() {
+        // Set up initial confirmed order
+        Product initialProduct = new TestProduct("Espresso", 2.00);
+        productInput.addProduct(initialProduct);
+        productInput.setReadyToPay(true);
+
+        // Confirm initial order state
+        assertTrue(productInput.isReadyToPay(), "Order should be initially set to ready to pay.");
+
+        // Add another product
+        Product additionalProduct = new TestProduct("Latte", 3.50);
+        productInput.addProduct(additionalProduct);
+
+        // Check if ready to pay has been reset
+        assertFalse(productInput.isReadyToPay(), "Adding a new product should reset readyToPay to false.");
+    }
 }
