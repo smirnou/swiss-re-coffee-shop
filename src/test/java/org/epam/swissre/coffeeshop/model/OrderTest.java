@@ -85,4 +85,50 @@ public class OrderTest {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> order.addProduct(null));
         assertTrue(exception.getMessage().contains("Product cannot be null"), "Adding null product should throw IllegalArgumentException");
     }
+
+    /**
+     * Test adding a product to an order, ensuring total cost is recalculated correctly.
+     */
+    @Test
+    public void testAddProductAndRecalculateTotalCost() {
+        Product newProduct = new Coffee(CoffeeSize.SMALL);
+        order.addProduct(newProduct);
+        assertNotNull(order.getProducts(), "Products list should not be null");
+        assertEquals(3, order.getProducts().size(), "Should contain three products after addition");
+        double expectedTotal = 6.42;
+        assertEquals(expectedTotal, order.getTotalCost(), "Total cost should be recalculated correctly.");
+    }
+
+    /**
+     * Test that setting a null list of already paid products throws IllegalArgumentException.
+     */
+    @Test
+    public void testSettingNullAlreadyPaidProducts() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            order.setAlreadyPaidProducts(null);
+        });
+        assertTrue(exception.getMessage().contains("Product list cannot be null"), "Null list of already paid products should throw IllegalArgumentException.");
+    }
+
+    /**
+     * Test initialization with null products throws IllegalArgumentException.
+     */
+    @Test
+    public void testInitializationWithNullProducts() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Order(null);
+        });
+        assertTrue(exception.getMessage().contains("Products cannot be null"), "Initializing with null products should throw IllegalArgumentException.");
+    }
+
+    /**
+     * Test recalculation of the total cost with multiple products.
+     */
+    @Test
+    public void testRecalculateTotalCost_WithMultipleProducts() {
+        Product product3 = new Coffee(CoffeeSize.MEDIUM);
+        order.addProduct(product3);
+        double expectedTotalCost = 6.92;
+        assertEquals(expectedTotalCost, order.getTotalCost(), "Total cost should be recalculated correctly with multiple products.");
+    }
 }
